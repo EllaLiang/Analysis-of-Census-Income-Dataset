@@ -19,14 +19,13 @@ The Neural Network is the strongest classifier of the seven methods. The Random 
 
 ```
  README.md
- report/
-    Report.pdf
- data/
+ Report.pdf
+ Data/
     adult.data
     adult.test
     adult.names
- code/
-    Census Data.R
+ Code/
+    code.r
  ```
  
 # Team
