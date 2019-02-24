@@ -22,9 +22,11 @@ no.question.mark <- apply(adulttrain, 1, function(r) !any(r %in% ' ?'))
  
 adulttrain <- adulttrain[no.question.mark,]
 
-no.question.mark <- apply(adulttest, 1, function(r) !any(r %in% ' ?')) adulttest <- adulttest[no.question.mark,]
+no.question.mark <- apply(adulttest, 1, function(r) !any(r %in% ' ?')) 
+adulttest <- adulttest[no.question.mark,]
 
-adulttrain <- as.data.frame(unclass(adulttrain),stringsAsFactors = T) adulttest <- as.data.frame(unclass(adulttest),stringsAsFactors = T)
+adulttrain <- as.data.frame(unclass(adulttrain),stringsAsFactors = T) 
+adulttest <- as.data.frame(unclass(adulttest),stringsAsFactors = T)
 
 ############################################################################## ################## ############################################################################## ##################
 #############code for: Visulization, Association Rule, Dimension Reduction ##################### ############################################################################## ################## ############################################################################## ##################
@@ -35,12 +37,16 @@ no.outlier<-function(data,x)
 {
 for (i in x)
 {
-a<-boxplot.stats(data[,i])$out data<-data[!data[,i]%in%a,] print(length(a))
+a<-boxplot.stats(data[,i])$out 
+data<-data[!data[,i]%in%a,] 
+print(length(a))
 }
 return(data)
 }
 str(adulttrain)
-Adultdata<- no.outlier(Adultdata,c(1,3)) adulttrain <- no.outlier(adulttrain,c(1,3)) adulttest <- no.outlier(adulttest,c(1,3))
+Adultdata<- no.outlier(Adultdata,c(1,3)) 
+adulttrain <- no.outlier(adulttrain,c(1,3)) 
+adulttest <- no.outlier(adulttest,c(1,3))
 
 #------------------------------------------------------------------------
 ### Visualization
@@ -49,9 +55,9 @@ Adultdata<- no.outlier(Adultdata,c(1,3)) adulttrain <- no.outlier(adulttrain,c(1
 if(i != "income"){
 # Enters this block if variable is non-categorical skewVal <- skewness(Adultdata[,i]) print(paste(i, skewVal, sep = ": ")) if(abs(skewVal) > 0.5){
 skewedVars <- c(skewedVars, i)
-}
-}
-}
+   }
+  }
+ }
 }
 N.obs<-dim(Adultdata)[1] N.var<-dim(Adultdata)[2]
 ## Explore Numerical Variable
@@ -248,8 +254,11 @@ tree <- rpart(income ~ ., data = adulttrain, method = 'class') pred.tree <- pred
 # 2.---------- Random Forest ------------#
  
 set.seed(123)
-rf.adult <- randomForest(adulttrain$income ~ ., data=adulttrain,mtry=sqrt(10),importance=TRUE) rf.adult
-rf.hpred <- predict(rf.adult,newdata=adulttest,type="class") confusionMatrix(rf.hpred,income) varImpPlot(rf.adult,type=2)
+rf.adult <- randomForest(adulttrain$income ~ ., data=adulttrain,mtry=sqrt(10),importance=TRUE) 
+rf.adult
+rf.hpred <- predict(rf.adult,newdata=adulttest,type="class") 
+confusionMatrix(rf.hpred,income) 
+varImpPlot(rf.adult,type=2)
 
 # 3. #---------- Logistic Regression ------------#
 logistfit<- glm(income ~ .,data=adulttrain,family=binomial(link='logit')) summary(logistfit)
@@ -351,7 +360,10 @@ ROCres.nb <- roc(posteriorYes.nb,trueYes) tidyROCres.nb <- tidy(ROCres.nb)
 # SVM
 set.seed(3)
 svm.model1 <- svm(income~., data = adulttrain,kernel = "radial", cost = 1, gamma = 0.1,scale=TRUE,probability=T)
-svmpreds <- predict(svm.model1, adulttest,probability = T) posteriorYes.svm <- attr(svmpreds, "probabilities")[,2] ROCres.svm <- roc(posteriorYes.svm,trueYes) tidyROCres.svm <- tidy(ROCres.svm)
+svmpreds <- predict(svm.model1, adulttest,probability = T) 
+posteriorYes.svm <- attr(svmpreds, "probabilities")[,2] 
+ROCres.svm <- roc(posteriorYes.svm,trueYes) 
+tidyROCres.svm <- tidy(ROCres.svm)
 
 # KNN
 set.seed(6)
