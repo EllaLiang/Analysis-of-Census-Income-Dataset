@@ -50,19 +50,27 @@ adulttest <- no.outlier(adulttest,c(1,3))
 
 #------------------------------------------------------------------------
 ### Visualization
-## Detecting skewed variables skewedVars<- NA library(moments) # for skewness() for(i in names(Adultdata)){ if(is.numeric(Adultdata[,i])){
- 
+## Detecting skewed variables 
+skewedVars<- NA library(moments) # for skewness() 
+for(i in names(Adultdata)){ if(is.numeric(Adultdata[,i])){
 if(i != "income"){
-# Enters this block if variable is non-categorical skewVal <- skewness(Adultdata[,i]) print(paste(i, skewVal, sep = ": ")) if(abs(skewVal) > 0.5){
+# Enters this block if variable is non-categorical 
+skewVal <- skewness(Adultdata[,i]) 
+print(paste(i, skewVal, sep = ": ")) 
+if(abs(skewVal) > 0.5){
 skewedVars <- c(skewedVars, i)
    }
   }
  }
 }
-N.obs<-dim(Adultdata)[1] N.var<-dim(Adultdata)[2]
+N.obs<-dim(Adultdata)[1] 
+N.var<-dim(Adultdata)[2]
 ## Explore Numerical Variable
-## Correlation between numerical variables numeric.var <- sapply(Adultdata, is.numeric) ## Calculate the correlation matrix
-corr <- cor(Adultdata[,numeric.var]) corr
+## Correlation between numerical variables 
+numeric.var <- sapply(Adultdata, is.numeric) 
+## Calculate the correlation matrix
+corr <- cor(Adultdata[,numeric.var]) 
+corr
 
 p1 <- ggplot(Adultdata, aes(x=age)) + ggtitle("Histogram of Age") + geom_histogram(aes(y = 100*(..count..)/sum(..count..)), binwidth=5, colour="black", fill="salmon") + ylab("Percentage")
 grid.arrange(p1)
@@ -82,12 +90,16 @@ grid.arrange(p6)
 # number of data with zero Capital Loss
 (CL <- sum(Adultdata$capital.loss==0)/N.obs*100)
 
-# remove the variable: capital.gain and capital.loss Adultdata[["capital.gain"]] <- NULL Adultdata[["capital.loss"]] <- NULL
+# remove the variable: capital.gain and capital.loss 
+Adultdata[["capital.gain"]] <- NULL 
+Adultdata[["capital.loss"]] <- NULL
 
 ## Explore Categorical Data
 # Sort categorical variables in descending order
 categ.sort <- function(x){reorder(x,x,function(y){-length(y)})} ## Sorting function for categorical variables
-categ.var <- which(sapply(Adultdata, is.factor)) ## Find the categorical variables for (c in categ.var){ ## Apply the sort function on each categorical variable Adultdata[,c] <- categ.sort(Adultdata[,c])
+categ.var <- which(sapply(Adultdata, is.factor)) ## Find the categorical variables 
+for (c in categ.var){ ## Apply the sort function on each categorical variable 
+Adultdata[,c] <- categ.sort(Adultdata[,c])
 }
 attach(Adultdata)
 p1 <- ggplot(Adultdata, aes(x=Adultdata$workclass)) + ggtitle("Histogram of Work Class") + xlab("Work Class") +
@@ -104,9 +116,7 @@ p4 <- ggplot(Adultdata, aes(x=occupation)) + ggtitle("Histogram of Occupation") 
 geom_bar(aes(y = 100*(..count..)/sum(..count..)),colour="black", fill="salmon") + ylab("Percentage") +
 scale_x_discrete(limits = levels(Adultdata$occupation)) grid.arrange(p4)
 p5 <- ggplot(Adultdata, aes(x=relationship)) + ggtitle("Histogram of Relationship") + xlab("Relationship") +
-geom_bar(aes(y = 100*(..count..)/sum(..count..)),colour="black", fill="salmon") +
- 
-ylab("Percentage") +
+geom_bar(aes(y = 100*(..count..)/sum(..count..)),colour="black", fill="salmon") + ylab("Percentage") +
 scale_x_discrete(limits = levels(Adultdata$relationship)) grid.arrange(p5)
 p6 <- ggplot(Adultdata, aes(x=race)) + ggtitle("Histogram of Race") + xlab("Race") + geom_bar(aes(y = 100*(..count..)/sum(..count..)),colour="black", fill="salmon") + ylab("Percentage") +
 scale_x_discrete(limits = levels(Adultdata$race)) grid.arrange(p6)
@@ -129,10 +139,13 @@ xlab = "Income Levels", ylab = "Hours per week", col = "salmon") # remove the va
 Adultdata[["fnlwgt"]] <- NULL
 
 #------------------------------------------
-# Correlation between categorical variables and income class qplot(income, data = Adultdata, fill = workclass) + facet_grid (. ~ workclass) qplot(income, data = Adultdata, fill = education) + facet_grid (. ~ education)
-qplot(income, data = Adultdata, fill = occupation) + facet_grid (. ~ occupation) qplot(income, data = Adultdata, fill = marital.status) + facet_grid (. ~ marital.status)
- 
-qplot(income, data = Adultdata, fill = relationship) + facet_grid (. ~ relationship) qplot(income, data = Adultdata, fill = race) + facet_grid (. ~ race)
+# Correlation between categorical variables and income class 
+qplot(income, data = Adultdata, fill = workclass) + facet_grid (. ~ workclass) 
+qplot(income, data = Adultdata, fill = education) + facet_grid (. ~ education)
+qplot(income, data = Adultdata, fill = occupation) + facet_grid (. ~ occupation)
+qplot(income, data = Adultdata, fill = marital.status) + facet_grid (. ~ marital.status)
+qplot(income, data = Adultdata, fill = relationship) + facet_grid (. ~ relationship)
+qplot(income, data = Adultdata, fill = race) + facet_grid (. ~ race)
 qplot(income, data = Adultdata, fill = sex) + facet_grid (. ~ sex)
 
 dim(Adultdata) ########################################################
@@ -149,13 +162,15 @@ rulesIncomeSmall <- subset(rules, subset = rhs %in% "income= <=50K" &lift > 1.2)
 
 
 #-----------------------------------------------------------------------
-########## Dimension Reduction ########## census<-adulttrain
+########## Dimension Reduction ########## 
+census<-adulttrain
 Adult<-adulttrain Adult_test<-adulttest
 Adult_test$income<-as.factor(Adult_test$income) str(Adult_test)
 summary(Adult)
 #------- MCA ---------#
 library(gtools)
-cont<-c(3,5,11,12,13) #the continuous variables that will be split into quartiles for (i in cont){Adult[,i]<-quantcut(Adult[,i])}
+cont<-c(3,5,11,12,13) #the continuous variables that will be split into quartiles 
+for (i in cont){Adult[,i]<-quantcut(Adult[,i])}
 for(i in cont) levels(Adult[,i]) <- paste(colnames(Adult)[i],levels(Adult[,i]))
 
 # Age variable
@@ -169,8 +184,11 @@ x.quanti<-census[,c(1,3,5,11,12,13)]
 x.quali<-census[,-c(1,3,5,11,12,13,15)] PCAmix(x.quanti,x.quali)
 
 library(FactoMineR)
-res<-MCA(Adult,quali.sup = c(15)) summary(res,ncp=3,nbelements=Inf) plot(res,label=c("var","quali.sup")) # too loaded
-plot(res,invisible=c("ind","quali.sup"),autoLab="y",cex=0.7) # plot active variables (categories) plot(res,invisible=c("ind"),cex=0.7,selectMod="contrib 20",unselect="grey90") # 20 variables contributed most
+res<-MCA(Adult,quali.sup = c(15)) 
+summary(res,ncp=3,nbelements=Inf) 
+plot(res,label=c("var","quali.sup")) # too loaded
+plot(res,invisible=c("ind","quali.sup"),autoLab="y",cex=0.7) # plot active variables (categories) 
+plot(res,invisible=c("ind"),cex=0.7,selectMod="contrib 20",unselect="grey90") # 20 variables contributed most
 plot(res,invisible=c("ind"),autoLab="y",cex=0.7,selectMod="cos2 20",unselect="grey90") # 20 variables most correlated
 plot(res, invisible=c("ind","var")) # illustrative variable (target modalities) dimdesc(res)
 
@@ -179,37 +197,62 @@ barplot(eig.val[, 2],
 names.arg = 1:nrow(eig.val),
 main = "Variances Explained by Dimensions (%)", xlab = "Principal Dimensions",
 ylab = "Percentage of variances", col ="steelblue")
-lines(x = 1:nrow(eig.val), eig.val[, 2], # Add connected line segments to the plot type = "l",pch = 19,col = "red")
+lines(x = 1:nrow(eig.val), eig.val[, 2], type = "l",pch = 19,col = "red")
 
 #-------- Variable clustering --------#
 x.quanti<-census[,c(1,3,5,11,12,13)]
 x.quali<-census[,-c(1,3,5,11,12,13,15)] library(ClustOfVar)
-#run variable clustering excluding the target variable (income) variable_tree <- hclustvar(X.quali = x.quali, X.quanti = x.quanti) #plot the dendrogram of variable groups
+#run variable clustering excluding the target variable (income) 
+variable_tree <- hclustvar(X.quali = x.quali, X.quanti = x.quanti) 
+#plot the dendrogram of variable groups
 plot(variable_tree) stability(variable_tree, B=25)
 ############################################################################## ######################
  
 ############################################################################## ######################
 ###########Back to introduction: data understanding,supervised and unsupervised Learning############ ####################################################################################
-# Display the histogram par(mfrow=c(2,3)) hist(adulttrain$age) hist(adulttrain$education.num) hist(adulttrain$hours.per.week) hist(adulttrain$capital.gain) hist(adulttrain$capital.loss)
+# Display the histogram 
+par(mfrow=c(2,3)) hist(adulttrain$age) 
+hist(adulttrain$education.num) 
+hist(adulttrain$hours.per.week) 
+hist(adulttrain$capital.gain) 
+hist(adulttrain$capital.loss)
 
-par(mfrow=c(2,3)) hist(adulttest$age) hist(adulttest$education.num) hist(adulttest$hours.per.week) hist(adulttest$capital.gain) hist(adulttest$capital.loss)
+par(mfrow=c(2,3)) 
+hist(adulttest$age) 
+hist(adulttest$education.num) 
+hist(adulttest$hours.per.week) 
+hist(adulttest$capital.gain) 
+hist(adulttest$capital.loss)
 
 # Display barplots par(mfrow=c(2,3))
-barplot(table(adulttrain$marital.status),main='marital.status') barplot(table(adulttrain$occupation),main='occupation') barplot(table(adulttrain$relationship),main='relationship') barplot(table(adulttrain$race),main='race') barplot(table(adulttrain$sex),main='sex') barplot(table(adulttrain$native.country),main='native.country')
+barplot(table(adulttrain$marital.status),main='marital.status') 
+barplot(table(adulttrain$occupation),main='occupation') 
+barplot(table(adulttrain$relationship),main='relationship') 
+barplot(table(adulttrain$race),main='race') 
+barplot(table(adulttrain$sex),main='sex') 
+barplot(table(adulttrain$native.country),main='native.country')
 
-par(mfrow=c(2,3)) barplot(table(adulttest$marital.status),main='marital.status') barplot(table(adulttest$occupation),main='occupation') barplot(table(adulttest$relationship),main='relationship') barplot(table(adulttest$race),main='race') barplot(table(adulttest$sex),main='sex') barplot(table(adulttest$native.country),main='native.country')
+par(mfrow=c(2,3)) 
+barplot(table(adulttest$marital.status),main='marital.status') 
+barplot(table(adulttest$occupation),main='occupation') 
+barplot(table(adulttest$relationship),main='relationship') 
+barplot(table(adulttest$race),main='race') 
+barplot(table(adulttest$sex),main='sex') 
+barplot(table(adulttest$native.country),main='native.country')
 
 length(adulttrain$capital.gain[adulttrain$capital.gain != 0])/length(adulttrain$capital.gain)+length(adulttrain$capital.loss[adulttrain$capital.loss != 0])/length(adulttrain$capital.loss)
 length(adulttest$capital.gain[adulttest$capital.gain !=
  
 0])/length(adulttest$capital.gain)+length(adulttest$capital.loss[adulttest$capital.loss != 0])/length(adulttest$capital.loss)
 
-# Delete variables adulttrain$education <- NULL adulttrain$native.country <- NULL adulttest$education <- NULL adulttest$native.country <- NULL
+# Delete variables 
+adulttrain$education <- NULL adulttrain$native.country <- NULL adulttest$education <- NULL adulttest$native.country <- NULL
 
 adulttrain$capital.change <- adulttrain$capital.gain - adulttrain$capital.loss adulttest$capital.change <- adulttest$capital.gain - adulttest$capital.loss adulttrain$capital.gain <- NULL
 adulttrain$capital.loss<-NULL adulttest$capital.gain <- NULL adulttest$capital.loss<-NULL
 
-# swap capital.change and income adulttrain[c(11,12)] <- adulttrain[c(12,11)]
+# swap capital.change and income 
+adulttrain[c(11,12)] <- adulttrain[c(12,11)]
 colnames(adulttrain)[11:12] <- colnames(adulttrain)[12:11] adulttest[c(11,12)] <- adulttest[c(12,11)] colnames(adulttest)[11:12] <- colnames(adulttest)[12:11]
 
 adulttrain$income <- as.factor(ifelse(adulttrain$income == ' <=50K',0,1)) adulttest$income <- as.factor(ifelse(adulttest$income == ' <=50K.',0,1)) str(adulttrain)
@@ -243,7 +286,12 @@ main="Optimal Number of Clusters", pch=20, cex=2)
 # From the plot we conclude that 6 is the best number.
 
 proto<-kproto(adulttrain, k=6) adulttrain$cluster = as.factor(proto$cluster) clprofiles(proto, adulttrain)
-plot(adulttrain$age,adulttrain$education.num,col=rainbow(6)[adulttrain$cluster],main='age vs education.num',pch=19) plot(adulttrain$age,adulttrain$hours.per.week,col=rainbow(6)[adulttrain$cluster],main='age vs hours.per.week',pch=19) plot(adulttrain$age,adulttrain$capital.change,col=rainbow(6)[adulttrain$cluster],main='age vs capital.change',pch=19) plot(adulttrain$education.num,adulttrain$hours.per.week,col=rainbow(6)[adulttrain$cluster], main='education.num vs hours.per.week',pch=19) plot(adulttrain$education.num,adulttrain$capital.change,col=rainbow(6)[adulttrain$cluster],m ain='education.num vs capital.change',pch=19) plot(adulttrain$hours.per.week,adulttrain$capital.change,col=rainbow(6)[adulttrain$cluster],m ain='hours.per.week vs capital.change',pch=19)
+plot(adulttrain$age,adulttrain$education.num,col=rainbow(6)[adulttrain$cluster],main='age vs education.num',pch=19) 
+plot(adulttrain$age,adulttrain$hours.per.week,col=rainbow(6)[adulttrain$cluster],main='age vs hours.per.week',pch=19) 
+plot(adulttrain$age,adulttrain$capital.change,col=rainbow(6)[adulttrain$cluster],main='age vs capital.change',pch=19) 
+plot(adulttrain$education.num,adulttrain$hours.per.week,col=rainbow(6)[adulttrain$cluster], main='education.num vs hours.per.week',pch=19) 
+plot(adulttrain$education.num,adulttrain$capital.change,col=rainbow(6)[adulttrain$cluster],m ain='education.num vs capital.change',pch=19) 
+plot(adulttrain$hours.per.week,adulttrain$capital.change,col=rainbow(6)[adulttrain$cluster],m ain='hours.per.week vs capital.change',pch=19)
 
 ######################### Supervised Learning #########################
 adulttrain$cluster<-NULL set.seed(1)
@@ -268,30 +316,33 @@ upper=formula(logistfit)),
 direction = 'forward')
 fwd_aic
 # Logistic Regression Prediction
-preds <- predict(logistfit,newdata=adulttest,type='response') preds <- ifelse(preds > 0.5,1,0)
-# Accuracy confusionMatrix(as.factor(preds),income) # 0.8402
-#census$capital.change <- census$capital.gain-census$capital.loss #adulttest$capital.change <- adulttest$capital.gain-adulttest$capital.loss #adulttrain<-census[,-c(3,4,11,12,14)]
-#adulttest<-adulttest[,-c(3,4,11,12,14)]
+preds <- predict(logistfit,newdata=adulttest,type='response') 
+preds <- ifelse(preds > 0.5,1,0)
+# Accuracy 
+confusionMatrix(as.factor(preds),income) # 0.8402
+
 
 # 4. ----------- Naive Bayes -----------#
 set.seed(2)
-NB_model<-naiveBayes(income~.,data = adulttrain) NB_prediction<-predict(NB_model,adulttest) confusionMatrix(NB_prediction,income )
+NB_model<-naiveBayes(income~.,data = adulttrain) 
+NB_prediction<-predict(NB_model,adulttest) 
+confusionMatrix(NB_prediction,income )
 # 5. ---------- SVM -----------#
 set.seed(3)
 svm.model<- svm(income~., data = adulttrain,kernel = "radial", cost = 1, gamma = 0.1,scale=TRUE)
 svm.predict <- predict(svm.model, adulttest) confusionMatrix(svm.predict,income) #table(svm.predict,Adult.tdummy[,10])
  
 # 6. ---------- KNN ------------#
-## Convert categorical variables to numerical data (Generate dummy variables) ## ## training set ##
-# create dummy variables (training set) # #set.seed()
+## Convert categorical variables to numerical data (Generate dummy variables) 
+## ## training set ##
+# create dummy variables (training set) # 
+#set.seed()
 library(dummies)
-Adult.dummy <- dummy.data.frame(adulttrain[,-11], sep = ".") Adult.dummy<-cbind(Adult.dummy,adulttrain$income) colnames(Adult.dummy)[46] <- "income" names(Adult.dummy)
+Adult.dummy <- dummy.data.frame(adulttrain[,-11], sep = ".") 
+Adult.dummy<-cbind(Adult.dummy,adulttrain$income) 
+colnames(Adult.dummy)[46] <- "income" names(Adult.dummy)
 Adult.dummy<-Adult.dummy[,-c(2,10,17,31,37,42)] # remove first dummy #
 
-# scale numerical variables # ## 2 sd ##
-#Adult.dummy$age<-(Adult.dummy$age-mean(adulttrain$age))/(sd(adulttrain$age))/2 #Adult.dummy$education.num<-(Adult.dummy$education.num- mean(adulttrain$education.num))/(sd(adulttrain$education.num))/2 #Adult.dummy$hours.per.week<-(Adult.dummy$hours.per.week- mean(adulttrain$hours.per.week))/(sd(adulttrain$hours.per.week))/2
-## 1 sd ##
-#Adult.dummy$age<-(Adult.dummy$age-mean(adulttrain$age))/sd(adulttrain$age) #Adult.dummy$education.num<-(Adult.dummy$education.num- mean(adulttrain$education.num))/sd(adulttrain$education.num) #Adult.dummy$hours.per.week<-(Adult.dummy$hours.per.week- mean(adulttrain$hours.per.week))/sd(adulttrain$hours.per.week)
 ## max-min ##
 Adult.dummy$age<-(Adult.dummy$age-min(adulttrain$age))/(max(adulttrain$age)- min(adulttrain$age))
 Adult.dummy$education.num<-(Adult.dummy$education.num- min(adulttrain$education.num))/(max(adulttrain$education.num)- min(adulttrain$education.num))
@@ -300,16 +351,13 @@ Adult.dummy$capital.change<-(Adult.dummy$capital.change- min(adulttrain$capital.
 
 ## test set ##
 # create dummy variables (test set) #
-Adult.tdummy <- dummy.data.frame(adulttest, sep = ".") #Adult.tdummy<-cbind(Adult.tdummy,income) str(Adult.tdummy)
+Adult.tdummy <- dummy.data.frame(adulttest, sep = ".") #Adult.tdummy<-cbind(Adult.tdummy,income) 
+str(Adult.tdummy)
 #colnames(Adult.tdummy)[46] <- "income" income==40
  
 names(Adult.tdummy)
 Adult.tdummy<-Adult.tdummy[,-c(2,10,17,31,37,42)] # remove first dummy #
 
-# scale numerical variables # ## 2 sd ##
-#Adult.tdummy$age<-(Adult.tdummy$age-mean(adulttrain$age))/(sd(adulttrain$age))/2 #Adult.tdummy$education.num<-(Adult.tdummy$education.num- mean(adulttrain$education.num))/(sd(adulttrain$education.num))/2 #Adult.tdummy$hours.per.week<-(Adult.tdummy$hours.per.week- mean(adulttrain$hours.per.week))/(sd(adulttrain$hours.per.week))/2
-## 1 sd ##
-#Adult.tdummy$age<-(Adult.tdummy$age-mean(adulttrain$age))/sd(adulttrain$age) #Adult.tdummy$education.num<-(Adult.tdummy$education.num- mean(adulttrain$education.num))/sd(adulttrain$education.num) #Adult.tdummy$hours.per.week<-(Adult.tdummy$hours.per.week- mean(adulttrain$hours.per.week))/sd(adulttrain$hours.per.week)
 ## max-min ##
 Adult.tdummy$age<-(Adult.tdummy$age-min(adulttrain$age))/(max(adulttrain$age)- min(adulttrain$age))
 Adult.tdummy$education.num<-(Adult.tdummy$education.num- min(adulttrain$education.num))/(max(adulttrain$education.num)- min(adulttrain$education.num))
@@ -325,15 +373,14 @@ knnpred <- knn(Adult.dummy[,-40],Adult.tdummy,Adult.dummy[,40], k = 10) confusio
 set.seed(7)
 knnpred <- knn(Adult.dummy[,-40],Adult.tdummy,Adult.dummy[,40], k = 15) confusionMatrix(knnpred,income)
 # k=the square-root of the number of observations # set.seed(8)
-knnpred <- knn(Adult.dummy[,-40],Adult.tdummy,Adult.dummy[,40], k =
- 
-round(sqrt(nrow(Adult.dummy)))) confusionMatrix(knnpred,income)
+knnpred <- knn(Adult.dummy[,-40],Adult.tdummy,Adult.dummy[,40], k =round(sqrt(nrow(Adult.dummy)))) confusionMatrix(knnpred,income)
 
 # 7. ---------- Neural Network ------------#
 set.seed(4) library(nnet)
 nn1 <- nnet(income~., data = adulttrain, size = 40, maxit = 500, MaxNWts=2000)
 summary(nn1)
-nn1.pred <- predict(nn1, newdata = adulttest, type = 'class') nn1.pred <- as.factor(nn1.pred) confusionMatrix(nn1.pred,income)
+nn1.pred <- predict(nn1, newdata = adulttest, type = 'class') 
+nn1.pred <- as.factor(nn1.pred) confusionMatrix(nn1.pred,income)
 
 ############################################################################## ##### ############################################################################## #####
 #############Conclusion: Evaluate the performance using ROC Curve ################# 
