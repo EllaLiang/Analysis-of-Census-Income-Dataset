@@ -189,7 +189,7 @@ plot(variable_tree) stability(variable_tree, B=25)
 ############################################################################## ######################
  
 ############################################################################## ######################
-###########Back to introduction: data understanding,supervised and unsupervised Learning############ ############################################################################## ###################### ############################################################################## ######################
+###########Back to introduction: data understanding,supervised and unsupervised Learning############ ####################################################################################
 # Display the histogram par(mfrow=c(2,3)) hist(adulttrain$age) hist(adulttrain$education.num) hist(adulttrain$hours.per.week) hist(adulttrain$capital.gain) hist(adulttrain$capital.loss)
 
 par(mfrow=c(2,3)) hist(adulttest$age) hist(adulttest$education.num) hist(adulttest$hours.per.week) hist(adulttest$capital.gain) hist(adulttest$capital.loss)
@@ -336,7 +336,7 @@ summary(nn1)
 nn1.pred <- predict(nn1, newdata = adulttest, type = 'class') nn1.pred <- as.factor(nn1.pred) confusionMatrix(nn1.pred,income)
 
 ############################################################################## ##### ############################################################################## #####
-#############Conclusion: Evaluate the performance using ROC Curve ################# ############################################################################## ##### ############################################################################## #####
+#############Conclusion: Evaluate the performance using ROC Curve ################# 
 
 trueYes <- income
 
@@ -378,9 +378,11 @@ geom_line(data=tidyROCres.tree,aes(x=fpr,y=tpr,color='Classification Trees')) +
 geom_line(data=tidyROCres.rf,aes(x=fpr,y=tpr,color='Random Forest')) + geom_line(data=tidyROCres.logit,aes(x=fpr,y=tpr,color='Logistic Regression')) + geom_line(data=tidyROCres.nb,aes(x=fpr,y=tpr,color='Naive Bayes')) + geom_line(data=tidyROCres.svm,aes(x=fpr,y=tpr,color='SVM')) + geom_line(data=tidyROCres.knn,aes(x=fpr,y=tpr,color='KNN')) + geom_line(data=tidyROCres.nn,aes(x=fpr,y=tpr,color='Neural Network')) + geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1)) +
 geom_abline(slope=1, intercept=0, linetype=2) + ggtitle('ROC Curves for various models')
 
-######################### ROC Curve END ####################### ######################### AUC #########################
- 
+######################### ROC Curve END ####################### 
+
+######################### AUC #########################
 require(AUC) aucs <-
 c(auc(ROCres.tree),auc(ROCres.rf),auc(ROCres.logit),auc(ROCres.nb),auc(ROCres.svm),auc(ROCr es.knn),auc(ROCres.nn))
 aucs.df <- data.frame(models = c('Classification Trees','Random Forest','Logistic Regression', 'Naive Bayes','SVM','KNN','Neural Network'),aucs)
-aucs.df[order(aucs.df$aucs,decreasing = T),] ######################### AUC END #########################
+aucs.df[order(aucs.df$aucs,decreasing = T),] 
+######################### AUC END #########################
