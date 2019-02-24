@@ -7,13 +7,18 @@ library(gridExtra) ## package for drawing multiple graphs on a grid
 
 ############################################### ############################################### ############# import data #################### ############################################### ###############################################
 
-datatrainurl <- 'http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data' datatesturl <-'http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test' datanameurl <- 'http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names' adulttrain <- read.table(datatrainurl,sep = ',',stringsAsFactors = FALSE)
+datatrainurl <- 'http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data' 
+datatesturl <-'http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test' 
+datanameurl <- 'http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names' 
+adulttrain <- read.table(datatrainurl,sep = ',',stringsAsFactors = FALSE)
 adulttest <- readLines(datatesturl)[-1]
 adulttest <- read.table(textConnection(adulttest),sep = ',',stringsAsFactors = FALSE)
 
 adultnames <- readLines(datanameurl)[97:110]
-adultnames <- as.character(lapply(strsplit(adultnames,':'), function(x) x[1])) adultnames <- c(adultnames,'income')
-colnames(adulttrain) <- adultnames colnames(adulttest) <- adultnames
+adultnames <- as.character(lapply(strsplit(adultnames,':'), function(x) x[1])) 
+adultnames <- c(adultnames,'income')
+colnames(adulttrain) <- adultnames 
+colnames(adulttest) <- adultnames
 
 str(adulttrain)
 
